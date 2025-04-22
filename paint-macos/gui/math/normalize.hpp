@@ -1,7 +1,5 @@
 #pragma once
 
-#include <gui/layout/point.hpp>
-#include <gui/layout/size.hpp>
 #include <math.h>
 
 namespace gui {

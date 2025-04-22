@@ -3,6 +3,7 @@
 
 #include <gui/context.hpp>
 #include <gui/mtl_renderer.hpp>
+#include <tool/drawable.hpp>
 #include <tool/pencil.hpp>
 #include <memory>
 
@@ -13,8 +14,7 @@
 
 @implementation PaintViewController {
     std::unique_ptr<gui::mtl_renderer_t> _renderer;
-    
-    std::vector<tool::pencil_t> _objects;
+    std::vector<std::unique_ptr<tool::drawable_t>> _drawables;
 }
 
 - (MTKView *)mtkView {
@@ -53,7 +53,9 @@
 
 - (void)mouseDown:(NSEvent *)event {
     NSLog(@"# mouseDown");
-    _objects.emplace_back();
+    _drawables.push_back(std::make_unique<tool::pencil_t>());
+    _drawables.back()->start({static_cast<float>(event.locationInWindow.x),
+                              static_cast<float>(self.view.frame.size.height - event.locationInWindow.y)});
 }
 
 - (void)mouseUp:(NSEvent *)event {
@@ -62,9 +64,9 @@
 
 - (void)mouseDragged:(NSEvent *)event {
     NSLog(@"# mouseDragged");
-    _objects.back().add_point({static_cast<float>(event.locationInWindow.x),
-                               static_cast<float>(self.view.frame.size.height - event.locationInWindow.y)});
-    
+    _drawables.back()->add_point({static_cast<float>(event.locationInWindow.x),
+                                  static_cast<float>(self.view.frame.size.height - event.locationInWindow.y)});
+
     [self.view setNeedsDisplay:YES];
 }
 
@@ -74,7 +76,6 @@
     NSLog(@"# drawInMTKView");
     gui::context_t ctx;
 
-    //    ctx.renderer = _renderer.get();
     ctx.surface_handle = (gui::surface_handle_t)(__bridge CA::MetalDrawable *)self.mtkView.currentDrawable;
 
     ctx.display_size = gui::layout::size_t{(float)(self.view.bounds.size.width),
@@ -85,9 +86,9 @@
 
     _renderer->begin_draw(ctx);
     
-    for(const tool::pencil_t &object : _objects)
+    for(const auto &drawable : _drawables)
     {
-        object.draw(_renderer->builder);
+        drawable->draw(_renderer->builder);
     }
     
     _renderer->end_draw();

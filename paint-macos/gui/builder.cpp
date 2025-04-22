@@ -31,13 +31,13 @@ void builder_t::add_polyline(const std::vector<gui::layout::vec2_t> &path,
                              const gui::layout::color_t &color,
                              float thickness)
 {
-    int count = path.size();
+    size_t count = path.size();
 
-    uint32_t index_buffer_offset = indices.size();
-    uint32_t vertex_buffer_offset = vertices.size();
+    uint32_t index_buffer_offset = static_cast<int>(indices.size());
+    uint32_t vertex_buffer_offset = static_cast<int>(vertices.size());
     commands.emplace_back(0, index_buffer_offset, vertex_buffer_offset, get_clip_rect_top());
 
-    for (int i1 = 0; i1 < count; i1++)
+    for (int i1 = 0; i1 < count - 1; i1++)
     {
         const int i2 = (i1 + 1) == count ? 0 : i1 + 1;
         const gui::layout::vec2_t &p1 = path[i1];
@@ -49,7 +49,7 @@ void builder_t::add_polyline(const std::vector<gui::layout::vec2_t> &path,
         dx *= (thickness * 0.5f);
         dy *= (thickness * 0.5f);
 
-        vertex_buffer_offset = vertices.size();
+        vertex_buffer_offset = static_cast<int>(vertices.size());
 
         vertices.emplace_back(gui::layout::vec2_t{p1.x + dy, p1.y - dx},
                               gui::layout::vec2_t{0, 0},

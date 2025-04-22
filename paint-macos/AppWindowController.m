@@ -1,7 +1,7 @@
 #import "AppWindowController.h"
 
 #import "AppWindow.h"
-#import "PaintView.h"
+#import "PaintViewController.h"
 
 @interface AppWindowController ()
 
@@ -12,10 +12,10 @@
 - (id)init {
     self = [super init];
     if(self) {
-        PaintView *view = [PaintView new];
+        PaintViewController *controller = [PaintViewController new];
                 
         self.window = [AppWindow new];
-        [self.window setContentView:view];
+        [self.window setContentViewController:controller];
         [self.window center];
         
         NSScreen *screen = [NSScreen mainScreen];

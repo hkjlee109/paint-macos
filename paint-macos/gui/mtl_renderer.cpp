@@ -87,6 +87,13 @@ void mtl_renderer_t::begin_draw(const gui::context_t &ctx)
 
 void mtl_renderer_t::end_draw()
 {
+    if(builder.indices.size() == 0 || builder.vertices.size() == 0)
+    {
+        _encoder->popDebugGroup();
+        _encoder->endEncoding();
+        return;
+    }
+    
     mtl_buffer_ref_t vertex_buffer = buffer_manager.dequeueReusableBuffer(_device,
                                                                           builder.vertices.size() * sizeof(gui::layout::vertex_t));
     
@@ -105,15 +112,15 @@ void mtl_renderer_t::end_draw()
 
     for(const gui::command_t &command : builder.commands)
     {
-        MTL::ScissorRect scissorRect =
-        {
-            .x = (NS::UInteger)(command.clip_rect.origin.x * _display_scale.x),
-            .y = (NS::UInteger)(command.clip_rect.origin.y * _display_scale.y),
-            .width = (NS::UInteger)(command.clip_rect.size.width * _display_scale.x),
-            .height = (NS::UInteger)(command.clip_rect.size.height * _display_scale.y)
-        };
-        _encoder->setScissorRect(scissorRect);
-        
+//        MTL::ScissorRect scissorRect =
+//        {
+//            .x = (NS::UInteger)(command.clip_rect.origin.x * _display_scale.x),
+//            .y = (NS::UInteger)(command.clip_rect.origin.y * _display_scale.y),
+//            .width = (NS::UInteger)(command.clip_rect.size.width * _display_scale.x),
+//            .height = (NS::UInteger)(command.clip_rect.size.height * _display_scale.y)
+//        };
+//        _encoder->setScissorRect(scissorRect);
+
         _encoder->setFragmentTexture(_texture.get(), 0);
         
         _encoder->drawIndexedPrimitives(MTL::PrimitiveTypeTriangleStrip,

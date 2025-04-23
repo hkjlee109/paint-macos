@@ -28,8 +28,8 @@ void pencil_t::add_point(const gui::layout::vec2_t &point)
 {
     _min_x = fmin(_min_x, point.x);
     _min_y = fmin(_min_y, point.y);
-    _max_x = fmin(_max_x, point.x);
-    _max_y = fmin(_max_y, point.y);
+    _max_x = fmax(_max_x, point.x);
+    _max_y = fmax(_max_y, point.y);
     
     _path.push_back(point);
 }

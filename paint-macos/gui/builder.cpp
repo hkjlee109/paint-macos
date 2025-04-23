@@ -72,7 +72,7 @@ void builder_t::add_polyline(const std::vector<gui::layout::vec2_t> &path,
                                         vertex_buffer_offset + 3 });    
     }
 
-    commands.back().count = indices.size() - index_buffer_offset;
+    commands.back().count = static_cast<uint32_t>(indices.size() - index_buffer_offset);
 }
 
 void builder_t::push_clip_rect(const gui::layout::rect_t &rect)

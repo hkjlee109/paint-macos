@@ -7,7 +7,6 @@
 #include <tool/pencil.hpp>
 #include <memory>
 
-
 @interface PaintViewController() <NSWindowDelegate, MTKViewDelegate>
 
 @end
